@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
+#import "CustomNavigationController.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +19,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    ViewController* rootVC = [[ViewController alloc] init];
+    CustomNavigationController* rootNV = [[CustomNavigationController alloc] initWithRootViewController:rootVC];
+    rootNV.navigationBarHidden = YES;
+
+    self.window.rootViewController = rootNV;
+    [self.window makeKeyAndVisible];
     return YES;
 }
 

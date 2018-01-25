@@ -1,0 +1,25 @@
+//
+//  QH_Prefix.pch
+//  QihooQRCode
+//
+//  Created by 赵天福 on 2017/3/10.
+//  Copyright © 2017年 赵天福. All rights reserved.
+//
+
+#ifndef QH_Prefix_pch
+#define QH_Prefix_pch
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+    #import "Define.h"
+    #import "Masonry.h"
+    #import "UIColor+HexString.h"
+    #import "UIButton+Category.h"
+    #import "UIView+FrameCategory.h"
+
+#endif
+
+
+
+#endif /* QH_Prefix_pch */
