@@ -738,6 +738,21 @@ END:VCARD
 }
 
 /**
+ *  总空间Str
+ */
++ (NSString *)haveTotalDiskSpaceStr
+{
+    CGFloat haveUseDiskSpace = [[Tools totalDiskSpace] floatValue];
+    
+    if (haveUseDiskSpace >= 1024*1024*1024)
+    {
+        return [NSString stringWithFormat:@"%.1fG",haveUseDiskSpace/(1024*1024*1024.00)];
+    }
+    
+    return [NSString stringWithFormat:@"%.1fM",haveUseDiskSpace/(1024*1024.00)];
+}
+
+/**
  *  已用空间Str
  */
 + (NSString *)haveUseDiskSpaceStr
@@ -746,10 +761,10 @@ END:VCARD
     
     if (haveUseDiskSpace >= 1024*1024*1024)
     {
-        return [NSString stringWithFormat:@"%.2fG",haveUseDiskSpace/(1024*1024*1024.00)];
+        return [NSString stringWithFormat:@"%.1fG",haveUseDiskSpace/(1024*1024*1024.00)];
     }
     
-    return [NSString stringWithFormat:@"%.2fM",haveUseDiskSpace/(1024*1024.00)];
+    return [NSString stringWithFormat:@"%.1fM",haveUseDiskSpace/(1024*1024.00)];
 }
 
 /**
@@ -761,10 +776,10 @@ END:VCARD
     
     if (freeDiskSpace >= 1024*1024*1024)
     {
-        return [NSString stringWithFormat:@"%.2fG",freeDiskSpace/(1024*1024*1024.00)];
+        return [NSString stringWithFormat:@"%.1fG",freeDiskSpace/(1024*1024*1024.00)];
     }
     
-    return [NSString stringWithFormat:@"%.2fM",freeDiskSpace/(1024*1024.00)];
+    return [NSString stringWithFormat:@"%.1fM",freeDiskSpace/(1024*1024.00)];
 }
 
 @end

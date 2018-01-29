@@ -24,6 +24,7 @@ typedef void (^SGWiFiUploadManagerFileUploadFinishBlock)(NSString *fileName, NSS
 @property (nonatomic, copy) NSString *savePath;
 @property (nonatomic, copy) NSString *webPath;
 @property (nonatomic, copy) NSString *cachePath;
+@property (nonatomic, copy) NSString *cacheImgPath;
 
 @property (nonatomic, assign)id<SGWiFiUploadManagerDelegate>delegate;
 

@@ -19,6 +19,7 @@
     #import "UIColor+HexString.h"
     #import "UIButton+Category.h"
     #import "UIView+FrameCategory.h"
+    #import "Tools.h"
 
 #endif
 

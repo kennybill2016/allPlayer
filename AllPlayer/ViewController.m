@@ -44,6 +44,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self getDiskFreeSpace];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -115,7 +116,7 @@
     label.font = [UIFont systemFontOfSize: 20];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor colorWithRed:0.13 green:0.74 blue:0.14 alpha:1.00];
-    label.text = @"万能播放器";
+    label.text = @"全能播放器";
     [self.topView addSubview: label];
 }
 
@@ -124,7 +125,6 @@
     UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightButton setFrame:CGRectMake(0, 0, imageBtn.size.width, imageBtn.size.height)];
     [rightButton setImage:imageBtn forState:UIControlStateNormal];
-//    [rightButton setHighlightedImageWithName:@"nav_download"];
     [rightButton setImage:[UIImage imageNamed:@"nav_download_h"] forState:UIControlStateHighlighted];
     [rightButton addTarget:self
                     action:@selector(actionTouchUploadButton)
@@ -170,7 +170,8 @@
         make.left.right.equalTo(self.view);
         make.bottom.equalTo(self.view).offset(-18.0f);
     }];
-    _tableView.estimatedRowHeight = 90.0f;
+    _tableView.rowHeight = 90.0f;
+//    _tableView.estimatedRowHeight = 90.0f;
     [_tableView registerClass:[VideoTableViewCell class] forCellReuseIdentifier:@"videoCell"];
 }
 
@@ -242,7 +243,7 @@
     
     //设置进度条的颜色
     self.diskProgressView.progressTintColor = [UIColor colorWithRed:0.78 green:0.78 blue:0.78 alpha:1.00];
-    self.diskProgressView.progress = 0.8;
+    self.diskProgressView.progress = 0.0;
     CGAffineTransform transform = CGAffineTransformMakeScale(1.0f, 18.0f);
     self.diskProgressView.transform = transform;
     
@@ -252,7 +253,7 @@
     self.diskLabel.font = [UIFont systemFontOfSize: 12];
     self.diskLabel.textAlignment = NSTextAlignmentLeft;
     self.diskLabel.textColor = [UIColor colorWithRed:0.20 green:0.20 blue:0.20 alpha:1.00];
-    self.diskLabel.text = @"总空间";
+    self.diskLabel.text = @"";
     [self.view addSubview: self.diskLabel];
 }
 
@@ -317,7 +318,19 @@
         _tableView.hidden = YES;
         _emptyView.hidden = NO;
     }
+    [self getDiskFreeSpace];
 
+}
+
+- (void)getDiskFreeSpace {
+    NSString* freeSpace = [Tools freeDiskSpaceStr];
+    NSString* totalSpace = [Tools haveTotalDiskSpaceStr];
+    
+    CGFloat totalDisk = [[Tools totalDiskSpace] floatValue];
+    CGFloat useDisk = [[Tools haveUseDiskSpace] floatValue];
+    
+    self.diskProgressView.progress = useDisk/totalDisk;
+    self.diskLabel.text = [NSString stringWithFormat:@"总空间%@/剩余%@",totalSpace,freeSpace];
 }
 
 @end

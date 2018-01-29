@@ -55,5 +55,10 @@ typedef NS_ENUM(NSInteger,QRCodeType) {
 
 + (NSString *)freeDiskSpaceStr;
 + (NSString *)haveUseDiskSpaceStr;
++ (NSString *)haveTotalDiskSpaceStr;
+
++ (NSNumber *)totalDiskSpace;
++ (NSNumber *)freeDiskSpace;
++ (NSNumber *)haveUseDiskSpace;
 
 @end

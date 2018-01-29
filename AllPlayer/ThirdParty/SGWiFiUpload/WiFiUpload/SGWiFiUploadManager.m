@@ -68,7 +68,10 @@
     self.webPath = [[NSBundle mainBundle] resourcePath];
     self.savePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     self.cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-    
+    self.cacheImgPath = [self.cachePath stringByAppendingPathComponent:@"ImportVideoIcon"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.cacheImgPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:self.cacheImgPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
     _showVideoDict = [NSMutableDictionary new];
     _hideVideoDict = [NSMutableDictionary new];
     NSDictionary* showVideoDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"ShowVideoList"];
@@ -92,11 +95,23 @@
     NSArray* sortArray = [array sortedArrayUsingSelector:@selector(compare:)];
     _showVideoList = [NSMutableArray arrayWithArray:sortArray];
     
-    [self checkFileChange];
+    [self loadVideoInfo];
 }
 
 - (void)checkFileChange {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSMutableArray* newArray = [self getMovies];
+        NSArray* sortArray = [newArray sortedArrayUsingSelector:@selector(compare:)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _showVideoList = [NSMutableArray arrayWithArray:sortArray];
+            [self.delegate loadFileFinish];
+            [self checkFileChange];
+        });
+    });
+}
+
+- (void)loadVideoInfo {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSMutableArray* newArray = [self getMovies];
         NSArray* sortArray = [newArray sortedArrayUsingSelector:@selector(compare:)];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -210,8 +225,17 @@
             VideoInfo *info = [[VideoInfo alloc] init];
             info.name = pathStr;
             info.path = filePath;
-            info.size = [NSString stringWithFormat:@"%0.2f",[fileDic[@"NSFileSize"] integerValue]/1000.0/1024.0];
+            info.icon =[self getVideoScreenShotImage:filePath];
+            NSInteger filesize = [fileDic[@"NSFileSize"] integerValue];
+            if (filesize >= 1024*1024*1024)
+            {
+                info.size = [NSString stringWithFormat:@"%.1fG",filesize/(1024*1024*1024.00)];
+            }
+            else {
+                info.size = [NSString stringWithFormat:@"%.1fM",filesize/(1024*1024.00)];
+            }
             [dataArr addObject:info];
+
         }
     }
     return dataArr;
@@ -243,5 +267,52 @@
     }
     return NO;
 }
+
+//将所下载的图片保存到本地
+-(void) saveImage:(UIImage *)image withFileName:(NSString *)imageName ofType:(NSString *)extension inDirectory:(NSString *)directoryPath {
+    if ([[extension lowercaseString] isEqualToString:@"png"]) {
+        [UIImagePNGRepresentation(image) writeToFile:[directoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", imageName, @"png"]] options:NSAtomicWrite error:nil];
+    } else if ([[extension lowercaseString] isEqualToString:@"jpg"] || [[extension lowercaseString] isEqualToString:@"jpeg"]) {
+        [UIImageJPEGRepresentation(image, 1.0) writeToFile:[directoryPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", imageName, @"jpg"]] options:NSAtomicWrite error:nil];
+    } else {
+        //ALog(@"Image Save Failed\\nExtension: (%@) is not recognized, use (PNG/JPG)", extension);
+        NSLog(@"文件后缀不认识");
+    }
+}
+
+- (NSString*)getVideoScreenShotImage:(NSString *)filePath {
+    UIImage* fileImage = [self getScreenShotImageFromVideoPath:filePath];
+    NSString* imgName = [[filePath lastPathComponent] stringByDeletingPathExtension];
+    [self saveImage:fileImage withFileName:imgName ofType:@"jpg" inDirectory:self.cacheImgPath];
+    return [self.cacheImgPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", imgName, @"jpg"]];
+}
+
+- (UIImage *)getScreenShotImageFromVideoPath:(NSString *)filePath{
     
+    UIImage *shotImage;
+    //视频路径URL
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:fileURL options:nil];
+    
+    AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    
+    gen.appliesPreferredTrackTransform = YES;
+    
+    CMTime time = CMTimeMakeWithSeconds(0.0, 600);
+    
+    NSError *error = nil;
+    
+    CMTime actualTime;
+    
+    CGImageRef image = [gen copyCGImageAtTime:time actualTime:&actualTime error:&error];
+    
+    shotImage = [[UIImage alloc] initWithCGImage:image];
+    
+    CGImageRelease(image);
+    
+    return shotImage;
+    
+}
+
 @end
