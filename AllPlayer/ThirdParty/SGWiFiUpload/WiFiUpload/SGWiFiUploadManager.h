@@ -14,11 +14,18 @@ typedef void (^SGWiFiUploadManagerFileUploadStartBlock)(NSString *fileName, NSSt
 typedef void (^SGWiFiUploadManagerFileUploadProgressBlock)(NSString *fileName, NSString *savePath, CGFloat progress);
 typedef void (^SGWiFiUploadManagerFileUploadFinishBlock)(NSString *fileName, NSString *savePath);
 
+@protocol SGWiFiUploadManagerDelegate <NSObject>
+- (void)loadFileFinish;
+@end
+
 @interface SGWiFiUploadManager : NSObject
 
 @property (nonatomic, strong) HTTPServer *httpServer;
 @property (nonatomic, copy) NSString *savePath;
 @property (nonatomic, copy) NSString *webPath;
+@property (nonatomic, copy) NSString *cachePath;
+
+@property (nonatomic, assign)id<SGWiFiUploadManagerDelegate>delegate;
 
 + (instancetype)sharedManager;
 + (NSString *)ip;
@@ -34,5 +41,7 @@ typedef void (^SGWiFiUploadManagerFileUploadFinishBlock)(NSString *fileName, NSS
 - (void)setFileUploadStartCallback:(SGWiFiUploadManagerFileUploadStartBlock)callback;
 - (void)setFileUploadProgressCallback:(SGWiFiUploadManagerFileUploadProgressBlock)callback;
 - (void)setFileUploadFinishCallback:(SGWiFiUploadManagerFileUploadFinishBlock)callback;
-    
+
+- (NSMutableArray*)getVideoList;
+
 @end

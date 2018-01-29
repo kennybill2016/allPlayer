@@ -9,8 +9,9 @@
 #import "ViewController.h"
 #import "SGWiFiUploadManager.h"
 #import "VideoTableViewCell.h"
+#import "VideoInfo.h"
 
-@interface ViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate, UITableViewDataSource>
+@interface ViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate, UITableViewDataSource,SGWiFiUploadManagerDelegate>
 
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIView *photoView;
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) UILabel *diskLabel;
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *videoArray;
 
 @end
 
@@ -28,12 +30,16 @@
     [super viewDidLoad];
     self.view.backgroundColor = UICOLOR_ARGB(0xFFFFFFFF);
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
-    
+
     [self initTopView];
     [self initPhotoView];
     [self initStatusView];
     [self initEmptyView];
     [self initContentView];
+
+    SGWiFiUploadManager *mgr = [SGWiFiUploadManager sharedManager];
+    mgr.delegate = self;
+    [self loadFileFinish];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -166,7 +172,6 @@
     }];
     _tableView.estimatedRowHeight = 90.0f;
     [_tableView registerClass:[VideoTableViewCell class] forCellReuseIdentifier:@"videoCell"];
-    _tableView.hidden = YES;
 }
 
 - (void)initEmptyView {
@@ -259,12 +264,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return _videoArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     VideoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"videoCell" forIndexPath:indexPath];
+    VideoInfo* info = [_videoArray objectAtIndex:indexPath.row];
+    [cell drawCellWithData:info];
     return cell;
 }
 
@@ -297,6 +304,20 @@
 }
 - (void)moreBtnAction
 {
+}
+
+- (void)loadFileFinish {
+    _videoArray = [[SGWiFiUploadManager sharedManager] getVideoList];
+    [self.tableView reloadData];
+    if(_videoArray.count>0) {
+        _tableView.hidden = NO;
+        _emptyView.hidden = YES;
+    }
+    else {
+        _tableView.hidden = YES;
+        _emptyView.hidden = NO;
+    }
+
 }
 
 @end

@@ -12,6 +12,8 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
+    #import <AVFoundation/AVFoundation.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
     #import "Define.h"
     #import "Masonry.h"
     #import "UIColor+HexString.h"

@@ -10,10 +10,15 @@
 #import "HYBIPHelper.h"
 #import "SGHTTPConnection.h"
 #import "SGWiFiViewController.h"
+#import "VideoInfo.h"
 
 @interface SGWiFiUploadManager () {
     NSString *_tmpFileName;
     NSString *_tmpFilePath;
+    NSMutableDictionary* _showVideoDict;
+    NSMutableDictionary* _hideVideoDict;
+    
+    NSMutableArray* _showVideoList;
 }
 
 /*
@@ -50,10 +55,60 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.webPath = [[NSBundle mainBundle] resourcePath];
-        self.savePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+        [self initialize];
     }
     return self;
+}
+
+- (void)dealloc {
+    [self setupStop];
+}
+
+- (void)initialize {
+    self.webPath = [[NSBundle mainBundle] resourcePath];
+    self.savePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    self.cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+    
+    _showVideoDict = [NSMutableDictionary new];
+    _hideVideoDict = [NSMutableDictionary new];
+    NSDictionary* showVideoDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"ShowVideoList"];
+    if( showVideoDict ) {
+        _showVideoDict = [NSMutableDictionary dictionaryWithDictionary:showVideoDict];
+    }
+    NSDictionary* hideVideoDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"HideVideoList"];
+    if( hideVideoDict ) {
+        _hideVideoDict = [NSMutableDictionary dictionaryWithDictionary:hideVideoDict];
+    }
+
+    NSMutableArray* array = [NSMutableArray new];
+    for (NSString *key in _showVideoDict) {
+        NSLog(@"key: %@ value: %@", key, _showVideoDict[key]);
+        VideoInfo *info = _showVideoDict[key];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:info.path]) {
+            [array addObject:info];
+        }
+    }
+    NSArray* sortArray = [array sortedArrayUsingSelector:@selector(compare:)];
+    _showVideoList = [NSMutableArray arrayWithArray:sortArray];
+    
+    [self checkFileChange];
+}
+
+- (void)checkFileChange {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSMutableArray* newArray = [self getMovies];
+        NSArray* sortArray = [newArray sortedArrayUsingSelector:@selector(compare:)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _showVideoList = [NSMutableArray arrayWithArray:sortArray];
+            [self.delegate loadFileFinish];
+            [self checkFileChange];
+        });
+    });
+}
+
+- (NSMutableArray*)getVideoList {
+    return _showVideoList;
 }
 
 - (BOOL)startHTTPServerAtPort:(UInt16)port {
@@ -144,8 +199,49 @@
     self.finishBlock = callback;
 }
 
-- (void)dealloc {
-    [self setupStop];
+- (NSMutableArray *)getMovies{
+    NSMutableArray *dataArr = [NSMutableArray array];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *tempFileList = [fileManager contentsOfDirectoryAtPath:self.savePath error:nil];
+    for (NSString *pathStr in tempFileList) {
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@",self.savePath,pathStr];
+        if ([self isMovies:filePath]) {
+            NSDictionary *fileDic = [fileManager attributesOfItemAtPath:filePath error:nil];
+            VideoInfo *info = [[VideoInfo alloc] init];
+            info.name = pathStr;
+            info.path = filePath;
+            info.size = [NSString stringWithFormat:@"%0.2f",[fileDic[@"NSFileSize"] integerValue]/1000.0/1024.0];
+            [dataArr addObject:info];
+        }
+    }
+    return dataArr;
+}
+
+- (void)removeObject:(VideoInfo *)info{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:info.path error:nil];
+}
+
+///判断是不是视频文件
+- (BOOL)isMovies:(NSString *)path{
+    return [[[AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:path] options:nil] tracksWithMediaType:AVMediaTypeVideo] count] > 0;
+}
+
+///判断文件是否为video或者mp4(本地文件类型)
+- (BOOL)isVideo:(NSString *)path{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        return NO;
+    }
+    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)[path pathExtension], NULL);
+    CFStringRef MIMEType = UTTypeCopyPreferredTagWithClass (UTI, kUTTagClassMIMEType);
+    CFRelease(UTI);
+    if (!MIMEType) {
+        return NO;
+    }
+    if ([(__bridge NSString *)(MIMEType) isEqualToString:@"video/mp4"]) {
+        return YES;
+    }
+    return NO;
 }
     
 @end
