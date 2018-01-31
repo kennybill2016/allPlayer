@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SGConst.h"
 #import "HTTPServer.h"
+#import "VideoInfo.h"
 
 typedef void (^SGWiFiUploadManagerFileUploadStartBlock)(NSString *fileName, NSString *savePath);
 typedef void (^SGWiFiUploadManagerFileUploadProgressBlock)(NSString *fileName, NSString *savePath, CGFloat progress);
@@ -44,5 +45,6 @@ typedef void (^SGWiFiUploadManagerFileUploadFinishBlock)(NSString *fileName, NSS
 - (void)setFileUploadFinishCallback:(SGWiFiUploadManagerFileUploadFinishBlock)callback;
 
 - (NSMutableArray*)getVideoList;
+- (void)removeObject:(VideoInfo *)info;
 
 @end

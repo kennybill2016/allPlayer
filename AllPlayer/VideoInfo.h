@@ -15,4 +15,7 @@
 @property (nonatomic, strong) NSString *path;
 @property (nonatomic, strong) NSString *size;
 
+- (NSComparisonResult)nameCompare:(VideoInfo *)info;
+- (NSComparisonResult)compare:(VideoInfo *)info;
+
 @end

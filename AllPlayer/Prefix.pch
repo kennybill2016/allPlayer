@@ -20,6 +20,7 @@
     #import "UIButton+Category.h"
     #import "UIView+FrameCategory.h"
     #import "Tools.h"
+    #import "UIImage+IAnime.h"
 
 #endif
 

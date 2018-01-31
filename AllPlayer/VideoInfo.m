@@ -10,4 +10,12 @@
 
 @implementation VideoInfo
 
+- (NSComparisonResult)nameCompare:(VideoInfo *)info {
+    return [self.name compare:info.name];
+}
+
+- (NSComparisonResult)compare:(VideoInfo *)info {
+    return [self.name compare:info.name];
+}
+
 @end

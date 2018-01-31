@@ -56,6 +56,7 @@
         [_titleL mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.contentView).offset(10.0f);
             make.left.equalTo(_iconImg.mas_right).offset(10.0f);
+            make.right.equalTo(self.contentView).offset(10.0f);
         }];
         
         _sizeL = [[UILabel alloc] init];

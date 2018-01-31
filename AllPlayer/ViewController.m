@@ -10,6 +10,7 @@
 #import "SGWiFiUploadManager.h"
 #import "VideoTableViewCell.h"
 #import "VideoInfo.h"
+#import "PlayerViewController.h"
 
 @interface ViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIGestureRecognizerDelegate,UITableViewDelegate, UITableViewDataSource,SGWiFiUploadManagerDelegate>
 
@@ -112,9 +113,9 @@
         make.top.mas_offset((31.0f));
     }];
     
-    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(37+6, 32, 100, 20)];
+    UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(37+6, 32, 180, 20)];
     label.font = [UIFont systemFontOfSize: 20];
-    label.textAlignment = NSTextAlignmentCenter;
+    label.textAlignment = NSTextAlignmentLeft;
     label.textColor = [UIColor colorWithRed:0.13 green:0.74 blue:0.14 alpha:1.00];
     label.text = @"全能播放器";
     [self.topView addSubview: label];
@@ -215,7 +216,7 @@
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(_emptyView);
         make.height.mas_offset((18.0f));
-        make.width.mas_offset((200.0f));
+        make.width.mas_offset((260.0f));
         make.top.mas_offset(26+66);
     }];
     
@@ -274,6 +275,32 @@
     VideoInfo* info = [_videoArray objectAtIndex:indexPath.row];
     [cell drawCellWithData:info];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    PlayerViewController *player = [[PlayerViewController alloc] init];
+    VideoInfo* info = [_videoArray objectAtIndex:indexPath.row];
+    player.resoucePath = info.path;
+    player.resouceName = info.name;
+    
+    [self.navigationController pushViewController:player animated:YES];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return @"删除";
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        VideoInfo* info = [_videoArray objectAtIndex:indexPath.row];
+        [[SGWiFiUploadManager sharedManager] removeObject:info];
+    }
+    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationBottom];
 }
 
 - (void)actionPhoto {

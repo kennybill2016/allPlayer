@@ -10,7 +10,6 @@
 #import "HYBIPHelper.h"
 #import "SGHTTPConnection.h"
 #import "SGWiFiViewController.h"
-#import "VideoInfo.h"
 
 @interface SGWiFiUploadManager () {
     NSString *_tmpFileName;
@@ -113,7 +112,7 @@
 - (void)loadVideoInfo {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSMutableArray* newArray = [self getMovies];
-        NSArray* sortArray = [newArray sortedArrayUsingSelector:@selector(compare:)];
+        NSArray* sortArray = [newArray sortedArrayUsingSelector:@selector(nameCompare:)];
         dispatch_async(dispatch_get_main_queue(), ^{
             _showVideoList = [NSMutableArray arrayWithArray:sortArray];
             [self.delegate loadFileFinish];
@@ -244,6 +243,8 @@
 - (void)removeObject:(VideoInfo *)info{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     [fileManager removeItemAtPath:info.path error:nil];
+    
+    [_showVideoList removeObject:info];
 }
 
 ///判断是不是视频文件

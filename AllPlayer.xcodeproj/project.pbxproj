@@ -22,6 +22,8 @@
 		9758099C201A199B00AE6997 /* ZFPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9758098D201A199B00AE6997 /* ZFPlayerView.m */; };
 		9758099D201A199B00AE6997 /* MMMaterialDesignSpinner.m in Sources */ = {isa = PBXBuildFile; fileRef = 9758098E201A199B00AE6997 /* MMMaterialDesignSpinner.m */; };
 		9758099E201A199B00AE6997 /* ASValueTrackingSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 97580990201A199B00AE6997 /* ASValueTrackingSlider.m */; };
+		97AFC4BD201F0A05003E5414 /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AFC4BC201F0A05003E5414 /* PlayerViewController.m */; };
+		97AFC4C0201F32DE003E5414 /* UIImage+IAnime.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AFC4BF201F32DE003E5414 /* UIImage+IAnime.m */; };
 		97BA353A2018933A00609D60 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 97BA35392018933A00609D60 /* AppDelegate.m */; };
 		97BA353D2018933A00609D60 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97BA353C2018933A00609D60 /* ViewController.m */; };
 		97BA35402018933A00609D60 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97BA353E2018933A00609D60 /* Main.storyboard */; };
@@ -151,6 +153,10 @@
 		9758098E201A199B00AE6997 /* MMMaterialDesignSpinner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMMaterialDesignSpinner.m; sourceTree = "<group>"; };
 		9758098F201A199B00AE6997 /* ZFBrightnessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrightnessView.h; sourceTree = "<group>"; };
 		97580990201A199B00AE6997 /* ASValueTrackingSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASValueTrackingSlider.m; sourceTree = "<group>"; };
+		97AFC4BB201F0A05003E5414 /* PlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
+		97AFC4BC201F0A05003E5414 /* PlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
+		97AFC4BE201F32DE003E5414 /* UIImage+IAnime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+IAnime.h"; sourceTree = "<group>"; };
+		97AFC4BF201F32DE003E5414 /* UIImage+IAnime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+IAnime.m"; sourceTree = "<group>"; };
 		97BA35352018933A00609D60 /* AllPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97BA35382018933A00609D60 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		97BA35392018933A00609D60 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -430,6 +436,8 @@
 				97BA36DA2018C59500609D60 /* Prefix.pch */,
 				97BA353B2018933A00609D60 /* ViewController.h */,
 				97BA353C2018933A00609D60 /* ViewController.m */,
+				97AFC4BB201F0A05003E5414 /* PlayerViewController.h */,
+				97AFC4BC201F0A05003E5414 /* PlayerViewController.m */,
 				97BA353E2018933A00609D60 /* Main.storyboard */,
 				97BA35412018933A00609D60 /* Assets.xcassets */,
 				97BA35432018933A00609D60 /* LaunchScreen.storyboard */,
@@ -707,6 +715,8 @@
 				97BA370D2018C62F00609D60 /* NSSafeAddition.m */,
 				97BA370E2018C62F00609D60 /* NSData+Addition.m */,
 				97BA370F2018C62F00609D60 /* NSString+Addition.m */,
+				97AFC4BE201F32DE003E5414 /* UIImage+IAnime.h */,
+				97AFC4BF201F32DE003E5414 /* UIImage+IAnime.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -926,6 +936,7 @@
 				97BA375E2018C68100609D60 /* AFURLResponseSerialization.m in Sources */,
 				97BA36F92018C60200609D60 /* MASLayoutConstraint.m in Sources */,
 				97580996201A199B00AE6997 /* UIImageView+ZFCache.m in Sources */,
+				97AFC4BD201F0A05003E5414 /* PlayerViewController.m in Sources */,
 				97BA36A020189AAD00609D60 /* SGWiFiViewController.m in Sources */,
 				97580998201A199B00AE6997 /* ZFBrightnessView.m in Sources */,
 				97BA36A920189AAD00609D60 /* HTTPFileResponse.m in Sources */,
@@ -970,6 +981,7 @@
 				97BA36B420189AAD00609D60 /* DDData.m in Sources */,
 				97BA36A220189AAD00609D60 /* SGHTTPConnection.m in Sources */,
 				97BA376B2018C68100609D60 /* UIImage+GIF.m in Sources */,
+				97AFC4C0201F32DE003E5414 /* UIImage+IAnime.m in Sources */,
 				97BA36AE20189AAD00609D60 /* WebSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

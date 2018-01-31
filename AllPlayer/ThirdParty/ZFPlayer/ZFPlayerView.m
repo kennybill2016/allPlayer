@@ -393,6 +393,7 @@ typedef NS_ENUM(NSInteger, PanDirection){
         [self.controlView zf_playerDownloadBtnState:YES];
     }
     // 开始播放
+    [self _fullScreenAction];
     [self play];
     self.isPauseByUser = NO;
 }
